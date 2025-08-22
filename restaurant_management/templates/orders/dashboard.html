@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Dashboard - Restaurant Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="fas fa-clipboard-list me-2"></i>Order Dashboard</h2>
+            <p class="text-muted">Monitor and manage all restaurant orders</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'orders:kitchen' %}" class="btn btn-outline-warning me-2">
+                <i class="fas fa-fire me-1"></i>Kitchen View
+            </a>
+            <a href="{% url 'orders:bar' %}" class="btn btn-outline-info">
+                <i class="fas fa-glass-martini me-1"></i>Bar View
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Pending Orders -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock me-2"></i>Pending Orders
+                        <span class="badge bg-light text-dark ms-2">{{ pending_orders|length }}</span>
+                    </h5>
+                </div>
+                <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                    {% for order in pending_orders %}
+                    <div class="card mb-3 order-pending">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="card-title mb-0">Order #{{ order.id }}</h6>
+                                <span class="badge bg-warning">{{ order.order_type|title }}</span>
+                            </div>
+                            <p class="card-text small text-muted">
+                                <i class="fas fa-table me-1"></i>Table {{ order.table.table_number }}
+                            </p>
+                            <p class="card-text small">
+                                <strong>Items:</strong> {{ order.order_items.count }} items
+                            </p>
+                            <p class="card-text small">
+                                <strong>Total:</strong> ${{ order.total_amount|floatformat:2 }}
+                            </p>
+                            <p class="card-text small text-muted">
+                                <i class="fas fa-clock me-1"></i>{{ order.created_at|timesince }} ago
+                            </p>
+                            <div class="d-grid">
+                                <a href="{% url 'orders:detail' order.id %}" class="btn btn-sm btn-outline-warning">
+                                    <i class="fas fa-eye me-1"></i>View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                        <p>No pending orders</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Preparing Orders -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-fire me-2"></i>Preparing Orders
+                        <span class="badge bg-light text-dark ms-2">{{ preparing_orders|length }}</span>
+                    </h5>
+                </div>
+                <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                    {% for order in preparing_orders %}
+                    <div class="card mb-3 order-preparing">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="card-title mb-0">Order #{{ order.id }}</h6>
+                                <span class="badge bg-info">{{ order.order_type|title }}</span>
+                            </div>
+                            <p class="card-text small text-muted">
+                                <i class="fas fa-table me-1"></i>Table {{ order.table.table_number }}
+                            </p>
+                            <p class="card-text small">
+                                <strong>Items:</strong> {{ order.order_items.count }} items
+                            </p>
+                            <p class="card-text small">
+                                <strong>Total:</strong> ${{ order.total_amount|floatformat:2 }}
+                            </p>
+                            <p class="card-text small text-muted">
+                                <i class="fas fa-clock me-1"></i>{{ order.created_at|timesince }} ago
+                            </p>
+                            <div class="d-grid">
+                                <a href="{% url 'orders:detail' order.id %}" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-eye me-1"></i>View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted">
+                        <i class="fas fa-fire fa-2x mb-2"></i>
+                        <p>No orders being prepared</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Ready Orders -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>Ready Orders
+                        <span class="badge bg-light text-dark ms-2">{{ ready_orders|length }}</span>
+                    </h5>
+                </div>
+                <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                    {% for order in ready_orders %}
+                    <div class="card mb-3 order-ready">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="card-title mb-0">Order #{{ order.id }}</h6>
+                                <span class="badge bg-success">{{ order.order_type|title }}</span>
+                            </div>
+                            <p class="card-text small text-muted">
+                                <i class="fas fa-table me-1"></i>Table {{ order.table.table_number }}
+                            </p>
+                            <p class="card-text small">
+                                <strong>Items:</strong> {{ order.order_items.count }} items
+                            </p>
+                            <p class="card-text small">
+                                <strong>Total:</strong> ${{ order.total_amount|floatformat:2 }}
+                            </p>
+                            <p class="card-text small text-muted">
+                                <i class="fas fa-clock me-1"></i>{{ order.created_at|timesince }} ago
+                            </p>
+                            <div class="d-grid">
+                                <a href="{% url 'orders:detail' order.id %}" class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-eye me-1"></i>View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                        <p>No ready orders</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Real-time updates script -->
+<script>
+function updateOrderStatus() {
+    $.ajax({
+        url: '{% url "orders:status_api" %}',
+        method: 'GET',
+        success: function(data) {
+            // Update order counts and statuses in real-time
+            console.log('Orders updated:', data.orders.length);
+        }
+    });
+}
+
+// Update every 30 seconds
+setInterval(updateOrderStatus, 30000);
+</script>
+{% endblock %}
